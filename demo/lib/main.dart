@@ -1,188 +1,124 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:noitcua1/auction.dart';
+import 'package:noitcua1/Login.dart';
 
-class AuctionItem extends StatefulWidget {
-  final int initialTime;
-  final double initialPrice;
-  final String imageUrl;
-  final String productName;
 
-  const AuctionItem({super.key, 
-    required this.initialTime,
-    required this.initialPrice,
-    required this.imageUrl,
-    required this.productName,
-  });
 
+class LoginPage extends StatefulWidget {
   @override
-  _AuctionItemState createState() => _AuctionItemState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _AuctionItemState extends State<AuctionItem> {
-  late int _timeLeft;
-  late double _price;
-  bool _isHovering = false;
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  bool isEmailValid = false;
+  bool isPasswordValid = false;
 
   @override
   void initState() {
     super.initState();
-    _timeLeft = widget.initialTime;
-    _price = widget.initialPrice;
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_timeLeft > 0 && _price > 0) {
-        setState(() {
-          _timeLeft--;
-          _price = (_price - 0.5).clamp(0.0, double.infinity); // Ensure price doesn't go below zero
-        });
-      } else {
-        timer.cancel();
-      }
+    // Add listeners to both controllers
+    _emailController.addListener(_validateInputs);
+    _passwordController.addListener(_validateInputs);
+  }
+
+  // Validation logic for email and password
+  void _validateInputs() {
+    setState(() {
+      // Validate email: it must contain '@gmail.com'
+      String email = _emailController.text;
+      isEmailValid = RegExp("@gmail.com").hasMatch(email);
+
+      // Validate password: must be at least 8 characters
+      String password = _passwordController.text;
+      isPasswordValid = password.length >= 8;
+
+      print('Email Valid: $isEmailValid');
+      print('Password Valid: $isPasswordValid');
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovering = true),
-      onExit: (_) => setState(() => _isHovering = false),
-      child: Stack(
-        children: [
-          Card(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: Image.network(
-                    widget.imageUrl,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    widget.productName,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (_isHovering)
-            Container(
-              color: Colors.black54,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      'Time left: $_timeLeft seconds',
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Current price: \$${_price.toStringAsFixed(2)}',
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
+  void dispose() {
+    // Dispose of the controllers to avoid memory leaks
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
-}
-
-class ReverseAuctionHomePage extends StatelessWidget {
-  final List<Map<String, dynamic>> products = [
-    {
-      'name': '1987 Honda Accord',
-      'initialPrice': 5000.0,
-      'initialTime': 3600,
-      'imageUrl': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0MXwvD6nDU43UjWGT3tYESlnzwQxO87TH-Q&s',
-    },
-    {
-      'name': 'Kids Jeans',
-      'initialPrice': 300.0,
-      'initialTime': 1800,
-      'imageUrl': 'https://www.kidrepublic.co.nz/user/images/85908.jpg',
-    },
-    {
-      'name': 'HP Laptop',
-      'initialPrice': 8000.0,
-      'initialTime': 7200,
-      'imageUrl': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ98O8WMdb_VjGK56F6N8FLgIbD-G81qcnVQw&s',
-    },
-    {
-      'name': 'Nike Air Force 1',
-      'initialPrice': 200.0,
-      'initialTime': 3600,
-      'imageUrl': 'https://asnovel.de/cdn/shop/products/SBBSale.jpg?v=1637874889',
-    },
-    {
-      'name': 'Tesla Model S',
-      'initialPrice': 10000.0,
-      'initialTime': 10800,
-      'imageUrl': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuGhwhyGPU-e_Ns13u10W8M-JWDiPV5uahpg&s',
-    },
-    {
-      'name': 'RayBand Sunglasses',
-      'initialPrice': 500.0,
-      'initialTime': 5400,
-      'imageUrl': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRj4Dm1ENmrHn_XsX8HLwWAUAjT5gXWgWDTnA&s',
-    },
-  ];
-
-  ReverseAuctionHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Noitcua'),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'Featured listings',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Text(
+              'Noitcua',
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.75,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
+            SizedBox(height: 40),
+            Text(
+              'Log In Page',
+              style: TextStyle(
+                  fontSize: 24, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              controller: _emailController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Enter Email Here',
+                suffixIcon: Icon(
+                  Icons.check_box,
+                  color: isEmailValid ? Colors.orange : Colors.transparent, // Make icon transparent if invalid
                 ),
-                itemCount: products.length,
-                itemBuilder: (context, index) {
-                  return AuctionItem(
-                    initialTime: products[index]['initialTime'],
-                    initialPrice: products[index]['initialPrice'],
-                    imageUrl: products[index]['imageUrl'],
-                    productName: products[index]['name'],
-                  );
-                },
               ),
             ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-                onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const NewPage()),
-                );
+            SizedBox(height: 20),
+            TextField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Enter Password Here',
+                suffixIcon: Icon(
+                  Icons.check_box,
+                  color: isPasswordValid ? Colors.orange : Colors.transparent, // Make icon transparent if invalid
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextButton(
+              onPressed: () {
+                // Navigate to Register Page (Placeholder for functionality)
               },
+              child: Text(
+                'Register an account',
+                style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: (isEmailValid && isPasswordValid)
+                  ? () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ReverseAuctionHomePage()),
+                      );
+                    }
+                  : null, // Disable the button if conditions are not met
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange,
-                textStyle: const TextStyle(fontSize: 18),
+                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
-              child: const Text('Make an auction'),
+              child: Text(
+                'Log In',
+                style: TextStyle(fontSize: 18, color: Colors.white),
+              ),
             ),
           ],
         ),
@@ -192,7 +128,7 @@ class ReverseAuctionHomePage extends StatelessWidget {
 }
 
 void main() {
-  runApp( MaterialApp(
-    home: ReverseAuctionHomePage(),
+  runApp(MaterialApp(
+    home: LoginPage(),
   ));
 }

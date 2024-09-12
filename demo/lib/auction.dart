@@ -1,8 +1,11 @@
 // auction.dart
 import 'package:flutter/material.dart';
+import 'package:noitcua1/Login.dart';
+import 'package:noitcua1/main.dart';
 
-class NewPage extends StatelessWidget {
-  const NewPage({super.key});
+
+class AuctionPage extends StatelessWidget {
+  const AuctionPage(Type loginPage, {super.key});
 
   @override
   Widget build(BuildContext context) {
